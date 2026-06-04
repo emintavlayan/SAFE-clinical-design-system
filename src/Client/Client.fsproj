@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <DefineConstants>FABLE_COMPILER</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="postcss.config.js" />
+        <None Include="tailwind.config.js" />
+        <None Include="index.html" />
+        <None Include="paket.references" />
+        <Compile Include="Design\Theme.fs" />
+        <Compile Include="Design\Components.fs" />
+        <Compile Include="Design\SafetyPatterns.fs" />
+        <Compile Include="Design\Shell.fs" />
+        <Compile Include="Pages\PrinciplesPage.fs" />
+        <Compile Include="Pages\ComponentsPage.fs" />
+        <Compile Include="Pages\WizardPage.fs" />
+        <Compile Include="Pages\ValidationPage.fs" />
+        <Compile Include="Pages\ReviewPage.fs" />
+        <Compile Include="Pages\TodoPage.fs" />
+        <Compile Include="Index.fs" />
+        <Compile Include="App.fs" />
+        <None Include="vite.config.mts" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Shared\Shared.fsproj" />
+    </ItemGroup>
+    <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>
