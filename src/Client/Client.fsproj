@@ -13,9 +13,11 @@
         <Compile Include="Design\Components.fs" />
         <Compile Include="Design\SafetyPatterns.fs" />
         <Compile Include="Design\Shell.fs" />
-        <Compile Include="Pages\PrinciplesPage.fs" />
+        <Compile Include="Pages\HomePage.fs" />
         <Compile Include="Pages\ComponentsPage.fs" />
-        <Compile Include="Pages\WizardPage.fs" />
+        <Compile Include="Pages\WizardUiPage.fs" />
+        <Compile Include="Pages\StepsPage.fs" />
+        <Compile Include="Pages\AccordionPage.fs" />
         <Compile Include="Pages\ValidationPage.fs" />
         <Compile Include="Pages\ReviewPage.fs" />
         <Compile Include="Pages\TodoPage.fs" />

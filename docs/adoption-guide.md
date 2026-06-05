@@ -1,6 +1,6 @@
-# Adoption Guide
+# SAFE Clinical Design System Adoption Guide
 
-This guide describes how to apply `safe-clinical-design-system` to an existing SAFE application.
+This guide describes how to apply SAFE Clinical Design System to an existing SAFE application.
 
 ## What To Copy
 

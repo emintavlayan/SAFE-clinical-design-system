@@ -23,9 +23,11 @@ type TodoRow = {
 
 let private todosApi = Api.makeProxy<ITodosApi> ()
 
+/// Initializes the Todo sample state and starts loading the server-backed list.
 let init () =
     { Todos = NotStarted; Input = "" }, LoadTodos(Start()) |> Cmd.ofMsg
 
+/// Updates the Todo sample state in response to SAFE remote-data actions.
 let update msg model =
     match msg with
     | SetInput input -> { model with Input = input }, Cmd.none
@@ -52,6 +54,7 @@ let update msg model =
         | Start _ -> model, Cmd.none
         | Finished todos -> { model with Todos = Loaded todos }, Cmd.none
 
+/// Maps server Todo values to compact table rows for the gallery page.
 let private todoRows (todos: Todo list) : TodoRow list =
     todos
     |> List.map (fun todo -> {
@@ -59,13 +62,14 @@ let private todoRows (todos: Todo list) : TodoRow list =
         Description = todo.Description
     })
 
+/// Renders the Todo starter page using shared design-system primitives.
 let view model dispatch =
     Html.div [
         prop.className "space-y-6"
         prop.children [
             infoAlert
-                "Adoption example"
-                "This Todo page keeps the original SAFE server contract but replaces the template UI with shared design-system components."
+                "Working sample"
+                "This Todo page keeps the original SAFE server contract and applies the shared SAFE Clinical Design System components."
 
             Html.div [
                 prop.className "grid gap-6 xl:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]"

@@ -1,4 +1,4 @@
-# Safety Patterns
+# SAFE Clinical Design System Safety Patterns
 
 This document covers the safety-oriented patterns defined in `src/Client/Design/SafetyPatterns.fs`.
 

@@ -1,23 +1,24 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-    mode: "jit",
     content: [
         "./index.html",
         "./**/*.{fs,js,ts,jsx,tsx}",
-        "!./node_modules/**/*",
+        "!./node_modules/**/*"
     ],
     theme: {
-        extend: {},
+        extend: {}
     },
-    plugins: [require("daisyui")],
+    plugins: [
+        require("daisyui")
+    ],
     daisyui: {
         themes: [
-            "light --default",
-            "dark --prefersdark",
+            "light",
+            "dark",
             "corporate",
             "business",
             "emerald",
-            "synthwave",
-        ],
-    },
+            "synthwave"
+        ]
+    }
 }

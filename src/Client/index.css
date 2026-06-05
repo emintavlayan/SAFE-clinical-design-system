@@ -2,16 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-    html,
-    body,
-    #elmish-app {
-        height: 100%;
-    }
+html,
+body,
+#root,
+#elmish-app {
+    min-height: 100%;
+}
 
-    body {
-        margin: 0;
-        background-color: var(--color-base-200);
-        color: var(--color-base-content);
-    }
+body {
+    margin: 0;
 }

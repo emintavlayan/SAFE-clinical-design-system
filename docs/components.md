@@ -1,4 +1,4 @@
-# Components
+# SAFE Clinical Design System Components
 
 This document covers the reusable primitives defined in `src/Client/Design/Components.fs`.
 

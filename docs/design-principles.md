@@ -1,6 +1,6 @@
-# Design Principles
+# SAFE Clinical Design System Design Principles
 
-This document explains why the design principles in `safe-clinical-design-system` exist, when they should be used, and when they should not be used.
+This document explains why the design principles in SAFE Clinical Design System exist, when they should be used, and when they should not be used.
 
 ## Semantic Themes
 

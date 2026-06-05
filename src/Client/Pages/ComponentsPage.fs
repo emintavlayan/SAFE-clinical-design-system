@@ -2,112 +2,86 @@ module Pages.ComponentsPage
 
 open Feliz
 open Design.Components
-open Design.SafetyPatterns
 
 type Model = {
-    PatientId: string
-    WorkflowType: string
-    RequiresPeerReview: bool
+    SampleInput: string
+    SampleSelection: string
 }
 
 type Msg =
-    | SetPatientId of string
-    | SetWorkflowType of string
-    | SetRequiresPeerReview of bool
-
-type ExampleRow = {
-    Name: string
-    Status: Status
-    Risk: RiskLevel
-}
+    | SetSampleInput of string
+    | SetSampleSelection of string
 
 let initialModel = {
-    PatientId = "HOSP-20481"
-    WorkflowType = "plan-review"
-    RequiresPeerReview = true
+    SampleInput = "Clinical note"
+    SampleSelection = "review"
 }
 
 let private workflowOptions: SelectOption list = [
+    { Value = "review"; Label = "Review" }
     {
-        Value = "plan-review"
-        Label = "Plan review"
+        Value = "validation"
+        Label = "Validation"
     }
     {
-        Value = "dose-recalculation"
-        Label = "Dose recalculation"
-    }
-    {
-        Value = "export"
-        Label = "Export bundle"
+        Value = "execution"
+        Label = "Execution"
     }
 ]
+
+type ExampleRow = { Name: string; State: string }
 
 let private exampleRows = [
     {
-        Name = "Plan import"
-        Status = Ready
-        Risk = Moderate
+        Name = "Summary table"
+        State = "Starter"
     }
     {
-        Name = "Constraint validation"
-        Status = Blocked
-        Risk = High
+        Name = "Validation surface"
+        State = "Reusable"
     }
     {
-        Name = "Clinical sign-off"
-        Status = Complete
-        Risk = Low
+        Name = "Review gate"
+        State = "Shared"
     }
 ]
 
+/// Updates the local sample state for the component gallery.
 let update msg model =
     match msg with
-    | SetPatientId patientId -> { model with PatientId = patientId }
-    | SetWorkflowType workflowType -> {
+    | SetSampleInput sampleInput -> { model with SampleInput = sampleInput }
+    | SetSampleSelection sampleSelection -> {
         model with
-            WorkflowType = workflowType
-      }
-    | SetRequiresPeerReview requiresPeerReview -> {
-        model with
-            RequiresPeerReview = requiresPeerReview
+            SampleSelection = sampleSelection
       }
 
+/// Renders the compact component gallery page.
 let view model dispatch =
     Html.div [
-        prop.className "space-y-8"
+        prop.className "space-y-6"
         prop.children [
-            infoAlert
-                "Component catalog"
-                "These primitives are intended to be copied into production SAFE applications and composed into workflow-specific screens."
-
             Html.div [
                 prop.className "grid gap-6 xl:grid-cols-2"
                 prop.children [
-                    card "Actions" "Forward, neutral, and destructive actions should remain visually distinct." [
+                    card "Buttons" "Forward, neutral, and destructive actions stay visually distinct." [
                         Html.div [
                             prop.className "flex flex-wrap gap-3"
                             prop.children [
-                                primaryAction "Primary action" false (fun () -> ())
-                                secondaryAction "Secondary action" false (fun () -> ())
-                                dangerAction "Danger action" false (fun () -> ())
+                                primaryAction "Primary" false (fun () -> ())
+                                secondaryAction "Secondary" false (fun () -> ())
+                                dangerAction "Danger" false (fun () -> ())
                             ]
                         ]
                     ]
 
-                    card "Alerts" "Alert variants communicate severity without using arbitrary utility colors." [
+                    card "Alerts" "Alert variants communicate severity with semantic daisyUI classes." [
                         Html.div [
                             prop.className "space-y-3"
                             prop.children [
-                                warningAlert
-                                    "Warning"
-                                    "Warnings highlight conditions that require attention before execution."
-                                infoAlert
-                                    "Information"
-                                    "Informational messages explain context without blocking the workflow."
-                                successAlert
-                                    "Success"
-                                    "Success messages confirm that a review or validation gate has cleared."
-                                errorAlert "Error" "Error messages identify blocking conditions that must be corrected."
+                                infoAlert "Info" "Use for non-blocking operational context."
+                                warningAlert "Warning" "Use when operator attention is required."
+                                successAlert "Success" "Use when a workflow gate has cleared."
+                                errorAlert "Error" "Use for blocking or failed conditions."
                             ]
                         ]
                     ]
@@ -126,39 +100,33 @@ let view model dispatch =
                         ]
                     ]
 
-                    card "Form inputs" "Reusable fields should keep labels, hints, validation, and spacing consistent." [
+                    card "Inputs" "Reusable fields keep labels, hints, validation, and spacing consistent." [
                         Html.div [
                             prop.className "space-y-4"
                             prop.children [
                                 textInput
-                                    "Patient identifier"
-                                    "Use a stable clinical identifier."
-                                    model.PatientId
-                                    "Enter patient identifier"
-                                    (model.PatientId.Trim() = "")
-                                    (SetPatientId >> dispatch)
+                                    "Example input"
+                                    "Use shared field structure for standard data entry."
+                                    model.SampleInput
+                                    "Enter sample text"
+                                    false
+                                    (SetSampleInput >> dispatch)
                                 selectInput
-                                    "Workflow type"
-                                    "Choose the workflow family."
-                                    model.WorkflowType
+                                    "Example select"
+                                    "Use shared selection styling for simple choices."
+                                    model.SampleSelection
                                     workflowOptions
                                     false
-                                    (SetWorkflowType >> dispatch)
-                                checkbox
-                                    "Require peer review before execution"
-                                    model.RequiresPeerReview
-                                    (SetRequiresPeerReview >> dispatch)
+                                    (SetSampleSelection >> dispatch)
                             ]
                         ]
                     ]
 
-                    emptyState
-                        "Empty state"
-                        "Use empty states for missing data sets, not for transient validation messages."
-                        (Some(secondaryAction "Review source system" false (fun () -> ())))
-
-                    card "Field label" "Labels and hints should explain the data expectation before the user types." [
-                        fieldLabel "Plan scope" "Describe the specific structure set or course selection."
+                    card "Card" "Cards provide a standard surface for reusable content blocks." [
+                        Html.p [
+                            prop.className "text-sm opacity-80"
+                            prop.text "Use cards for component examples, summaries, and grouped workflow content."
+                        ]
                     ]
                 ]
             ]
@@ -166,22 +134,16 @@ let view model dispatch =
             Html.section [
                 prop.className "space-y-4"
                 prop.children [
-                    sectionTitle
-                        "Simple table"
-                        "Tables are appropriate when rows must be scanned and compared repeatedly."
+                    sectionTitle "Table" "Tables are appropriate when rows must be scanned and compared repeatedly."
                     simpleTable
                         [
                             {
-                                Header = "Workflow"
+                                Header = "Component"
                                 Cell = fun row -> Html.span row.Name
                             }
                             {
-                                Header = "Status"
-                                Cell = fun row -> statusBadge row.Status
-                            }
-                            {
-                                Header = "Risk"
-                                Cell = fun row -> riskBadge row.Risk
+                                Header = "State"
+                                Cell = fun row -> Html.span row.State
                             }
                         ]
                         exampleRows

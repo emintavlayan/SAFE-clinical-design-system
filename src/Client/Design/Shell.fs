@@ -12,6 +12,7 @@ type NavigationItem = {
 type ShellConfig = {
     Title: string
     Description: string
+    ShowPageHeader: bool
     Navigation: NavigationItem list
     Theme: string
     ThemeOptions: string list
@@ -45,45 +46,50 @@ let navbar
         prop.className "border-b border-base-300 bg-base-100"
         prop.children [
             Html.div [
-                prop.className
-                    "mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 lg:flex-row lg:items-end lg:justify-between lg:px-6"
+                prop.className "mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 lg:px-6"
                 prop.children [
                     Html.div [
-                        prop.className "space-y-3"
+                        prop.className "navbar min-h-0 flex-col items-start gap-4 rounded-box bg-base-100 px-0"
                         prop.children [
                             Html.div [
                                 prop.className "space-y-1"
                                 prop.children [
-                                    Html.span [
-                                        prop.className "text-sm font-semibold uppercase tracking-wide opacity-70"
-                                        prop.text "safe-clinical-design-system"
+                                    Html.h1 [
+                                        prop.className "text-xl font-semibold"
+                                        prop.text "SAFE Clinical Design System"
                                     ]
                                     Html.p [
                                         prop.className "max-w-3xl text-sm opacity-80"
                                         prop.text
-                                            "Reusable SAFE + Feliz patterns for safety-critical clinical applications."
+                                            "Reusable SAFE/Feliz/daisyUI patterns for clinical and safety-critical applications."
                                     ]
                                 ]
                             ]
-                            Html.nav [
-                                Html.ul [
-                                    prop.className "flex flex-wrap gap-2"
-                                    prop.children [
-                                        for item in navigation do
-                                            Html.li [
-                                                if item.IsActive then
-                                                    primaryAction item.Label false item.OnClick
-                                                else
-                                                    secondaryAction item.Label false item.OnClick
+                            Html.div [
+                                prop.className
+                                    "flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
+                                prop.children [
+                                    Html.nav [
+                                        Html.ul [
+                                            prop.className "flex flex-wrap gap-2"
+                                            prop.children [
+                                                for item in navigation do
+                                                    Html.li [
+                                                        if item.IsActive then
+                                                            primaryAction item.Label false item.OnClick
+                                                        else
+                                                            secondaryAction item.Label false item.OnClick
+                                                    ]
                                             ]
+                                        ]
+                                    ]
+                                    Html.div [
+                                        prop.className "w-full lg:w-72"
+                                        prop.children [ themeSelector currentTheme themeOptions onThemeChange ]
                                     ]
                                 ]
                             ]
                         ]
-                    ]
-                    Html.div [
-                        prop.className "lg:w-72"
-                        prop.children [ themeSelector currentTheme themeOptions onThemeChange ]
                     ]
                 ]
             ]
@@ -118,5 +124,9 @@ let pageTitleSection (title: string) (description: string) =
 let applicationShell (config: ShellConfig) =
     pageContainer [
         navbar config.ThemeOptions config.Theme config.Navigation config.OnThemeChange
-        contentContainer [ pageTitleSection config.Title config.Description; config.Content ]
+        contentContainer [
+            if config.ShowPageHeader then
+                pageTitleSection config.Title config.Description
+            config.Content
+        ]
     ]

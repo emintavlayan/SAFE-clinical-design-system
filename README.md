@@ -1,6 +1,6 @@
-# safe-clinical-design-system
+# SAFE Clinical Design System
 
-`safe-clinical-design-system` is a SAFE Stack repository for reusable UI patterns used in safety-critical clinical applications. It is the canonical source for shell layout, semantic theming, shared Feliz components, workflow patterns, and reference documentation that can be copied into production SAFE applications.
+SAFE Clinical Design System is a SAFE Stack repository for reusable UI patterns used in safety-critical clinical applications. It is the canonical source for shell layout, semantic theming, shared Feliz components, workflow patterns, and reference documentation that can be copied into production SAFE applications.
 
 ## Purpose
 
@@ -24,9 +24,11 @@ src/
       Components.fs
       SafetyPatterns.fs
     Pages/
-      PrinciplesPage.fs
+      HomePage.fs
       ComponentsPage.fs
-      WizardPage.fs
+      WizardUiPage.fs
+      StepsPage.fs
+      AccordionPage.fs
       ValidationPage.fs
       ReviewPage.fs
       TodoPage.fs
@@ -60,18 +62,20 @@ dotnet run
 
 The SAFE client runs at `http://localhost:8080`.
 
-## Reference Pages
+## Current Pages
 
-The running client contains design-system reference pages for:
+The running client contains:
 
-- `Principles`
+- `Home`
+- `Wizard UI`
+- `Steps`
+- `Accordion`
 - `Components`
-- `Wizard`
 - `Validation`
 - `Review Before Run`
 - `Todo`
 
-Use these pages as implementation references, not as production-ready workflows.
+These pages are lightweight reference surfaces and starter layouts, not production workflows.
 
 ## Theme Strategy
 

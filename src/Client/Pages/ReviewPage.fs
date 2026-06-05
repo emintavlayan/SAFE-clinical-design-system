@@ -1,81 +1,47 @@
 module Pages.ReviewPage
 
 open Feliz
+open Design.Components
 open Design.SafetyPatterns
 
 type Model = {
-    Checklist: Set<string>
+    IsReviewed: bool
     ExecutionRequested: bool
 }
 
 type Msg =
-    | ToggleChecklist of string * bool
+    | ToggleReviewed of bool
     | Execute
     | Cancel
 
 let initialModel = {
-    Checklist = Set.empty
+    IsReviewed = false
     ExecutionRequested = false
 }
 
-let private checklistKeys = [ "patient"; "parameters"; "warnings"; "provenance" ]
+/// Returns whether the Execute action can be enabled.
+let private canExecute model = model.IsReviewed
 
-let private checklistItems model = [
-    {
-        Key = "patient"
-        Label = "I verified the patient, course, and plan selection."
-        IsChecked = model.Checklist.Contains "patient"
-    }
-    {
-        Key = "parameters"
-        Label = "I reviewed the operation parameters and generated values."
-        IsChecked = model.Checklist.Contains "parameters"
-    }
-    {
-        Key = "warnings"
-        Label = "I assessed the warnings and determined they are acceptable for execution."
-        IsChecked = model.Checklist.Contains "warnings"
-    }
-    {
-        Key = "provenance"
-        Label = "I confirmed the provenance and source system refresh timestamp."
-        IsChecked = model.Checklist.Contains "provenance"
-    }
-]
-
-let private canExecute model =
-    checklistKeys |> List.forall model.Checklist.Contains
-
+/// Updates the review-before-run starter page state.
 let update msg model =
     match msg with
-    | ToggleChecklist(key, isChecked) ->
-        let checklist =
-            if isChecked then
-                model.Checklist |> Set.add key
-            else
-                model.Checklist |> Set.remove key
-
-        { model with Checklist = checklist }
+    | ToggleReviewed isReviewed -> { model with IsReviewed = isReviewed }
     | Execute when canExecute model -> { model with ExecutionRequested = true }
     | Execute -> model
     | Cancel -> {
         model with
-            Checklist = Set.empty
+            IsReviewed = false
             ExecutionRequested = false
       }
 
+/// Renders the review-before-run starter layout.
 let view model dispatch =
     Html.div [
         prop.className "space-y-6"
         prop.children [
-            Html.div [
-                prop.className "flex flex-wrap gap-2"
-                prop.children [ statusBadge Ready; riskBadge Moderate ]
-            ]
-
             decisionSummaryCard
-                "Workflow summary"
-                "Review summaries should let the operator inspect the full run context before execution."
+                "Summary"
+                "Review the clinical context before exposing the execution action."
                 ([
                     {
                         Label = "Patient"
@@ -96,6 +62,16 @@ let view model dispatch =
                 ]
                 : SummaryItem list)
 
+            card "Warnings" "Warnings should be visible before the operator chooses to execute." [
+                Html.div [
+                    prop.className "space-y-3"
+                    prop.children [
+                        warningAlert "Warning" "Imported structure data changed after the last approved plan review."
+                        warningAlert "Warning" "A peer review is required before downstream execution."
+                    ]
+                ]
+            ]
+
             provenancePanel
                 "Provenance"
                 ([
@@ -105,7 +81,7 @@ let view model dispatch =
                     }
                     {
                         Label = "Source plan version"
-                        Value = "14.2 / Approved 2026-06-04 09:15 CET"
+                        Value = "14.2 / Approved 2026-06-05 09:15 CET"
                     }
                     {
                         Label = "Imported by"
@@ -113,61 +89,31 @@ let view model dispatch =
                     }
                     {
                         Label = "Template version"
-                        Value = "safe-clinical-design-system / foundation"
+                        Value = "SAFE Clinical Design System foundation"
                     }
                 ]
                 : ProvenanceItem list)
 
-            reviewBeforeRunPanel
-                "Review before run"
-                "This mock workflow summary demonstrates the last gate before an execution action is exposed."
-                ([
-                    {
-                        Label = "Patient"
-                        Value = "HOSP-20481"
-                    }
-                    {
-                        Label = "Course"
-                        Value = "Thoracic adaptive course"
-                    }
-                    {
-                        Label = "Plan"
-                        Value = "PLAN-THX-07"
-                    }
-                    {
-                        Label = "Execution mode"
-                        Value = "Dose recalculation"
-                    }
+            card "Review checklist" "Execution stays disabled until the operator confirms review." [
+                Html.div [
+                    prop.className "space-y-4"
+                    prop.children [
+                        checkbox
+                            "I reviewed the summary, warnings, and provenance."
+                            model.IsReviewed
+                            (ToggleReviewed >> dispatch)
+                        if model.ExecutionRequested then
+                            successAlert "Execute enabled" "The review gate has been cleared for this starter example."
+                    ]
                 ]
-                : SummaryItem list)
-                [
-                    "The imported structure set changed after the last approved review."
-                    "A peer review is required before the recalculation result is copied downstream."
+            ]
+
+            Html.div [
+                prop.className "flex flex-wrap gap-3"
+                prop.children [
+                    secondaryAction "Cancel" false (fun () -> dispatch Cancel)
+                    primaryAction "Execute" (not (canExecute model)) (fun () -> dispatch Execute)
                 ]
-                ([
-                    {
-                        Label = "Parameters"
-                        Value = "Density override review enabled"
-                    }
-                    {
-                        Label = "Review owner"
-                        Value = "Physics reviewer / M. Sorensen"
-                    }
-                    {
-                        Label = "Last source refresh"
-                        Value = "2026-06-04 13:30 CET"
-                    }
-                    {
-                        Label = "Trace id"
-                        Value = "TRACE-CLINICAL-20481"
-                    }
-                ]
-                : ProvenanceItem list)
-                (checklistItems model)
-                (fun key isChecked -> dispatch (ToggleChecklist(key, isChecked)))
-                (fun () -> dispatch Execute)
-                (fun () -> dispatch Cancel)
-                (canExecute model)
-                model.ExecutionRequested
+            ]
         ]
     ]

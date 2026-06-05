@@ -1,4 +1,4 @@
-# Theme Policy
+# SAFE Clinical Design System Theme Policy
 
 This repository uses daisyUI themes to standardize reusable SAFE UI across multiple clinical applications.
 
@@ -11,7 +11,7 @@ This repository uses daisyUI themes to standardize reusable SAFE UI across multi
 - `emerald`
 - `synthwave`
 
-`light` is the default theme. `dark` follows the user’s preferred dark mode when no explicit selection has been saved.
+`light` is the default theme. `dark` follows the user's preferred dark mode when no explicit selection has been saved.
 
 ## Persistence
 
